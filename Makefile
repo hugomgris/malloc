@@ -67,6 +67,7 @@ $(NAME): $(OBJS) $(LIBFT)
 
 $(TEST_NAME):
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(TEST_NAME)
+	./ft_malloc
 	
 $(OBJDIR)/%.o: $(SRCDIR)/%.c Makefile
 	mkdir -p $(@D)
