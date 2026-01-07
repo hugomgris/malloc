@@ -12,7 +12,7 @@ void ft_show_alloc_mem(void)
         const char *label = (zone->type == TINY) ? "TINY" :
                             (zone->type == SMALL) ? "SMALL" : "LARGE";
 
-        printf("%s : %p\n", label, zone);
+        printf("%s%s : %p%s\n", BMAG, label, zone, RESET);
 
         t_block *block = zone->blocks;
         while (block)

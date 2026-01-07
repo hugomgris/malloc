@@ -28,7 +28,7 @@ void	ft_show_alloc_mem_ex(void)
 		else
 			label = "LARGE";
 
-		printf("%s ZONE @ %p | total zone size: %zu bytes\n", label, zone, zone->size);
+		printf("%s%s ZONE @ %p | total zone size: %zu bytes%s\n", BYEL, label, zone, zone->size, RESET);
 
 		t_block	*block = zone->blocks;
 
@@ -47,8 +47,8 @@ void	ft_show_alloc_mem_ex(void)
 		zone = zone->next;
 	}
 
-	printf("TOTAL USED : %zu bytes\n", total_used);
-	printf("TOTAL ft_free : %zu bytes\n", total_freed);
+	printf("%sTOTAL USED : %zu bytes%s\n", GRNHB, total_used, RESET);
+	printf("%sTOTAL FREED : %zu bytes%s\n", CYNHB, total_freed, RESET);
 
 	pthread_mutex_unlock(&g_malloc_mutex);
 }

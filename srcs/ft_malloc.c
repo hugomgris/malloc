@@ -3,7 +3,7 @@
 void	*ft_malloc(size_t size)
 {
 	if (is_debug_mode())
-		printf("Allocation of %zu bytes\n", size);
+		printf("%s[DEBUG] Allocation of %zu bytes%s\n", YELB, size, RESET);
 
 	void *ptr;
 

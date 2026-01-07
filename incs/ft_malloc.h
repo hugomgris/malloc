@@ -7,6 +7,7 @@
 # include <sys/mman.h>
 # include <sys/resource.h>
 # include <pthread.h>
+# include "colors.h"
 # include "logger.h"
 # include "../libft/incs/libft.h"
 # include "../libft/incs/ft_printf.h"
