@@ -1,6 +1,14 @@
+# -=-=-=-=-    HOSTTYPE -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+
+ifeq ($(HOSTTYPE),)
+HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
 # -=-=-=-=-    NAME -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-NAME			= 	ft_malloc
+NAME			:= libft_malloc_$(HOSTTYPE).so
+TEST_NAME		:= ft_malloc
+SO_LINK			:= libft_malloc.so
 
 # -=-=-=-=-    FILES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -38,7 +46,12 @@ DEPFLAGS		=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-all: directories libs $(NAME)
+all: directories libs $(NAME) symlink
+
+test: all directories libs $(TEST_NAME)
+
+symlink:
+	@ln -sf $(NAME) $(SO_LINK)
 
 directories:
 	@mkdir -p $(OBJDIR)
@@ -51,6 +64,9 @@ libs:
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
+
+$(TEST_NAME):
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(TEST_NAME)
 	
 $(OBJDIR)/%.o: $(SRCDIR)/%.c Makefile
 	mkdir -p $(@D)
@@ -62,7 +78,8 @@ clean:
 	@make -C ./libft clean
 
 fclean: clean
-	@/bin/rm -f $(NAME)
+	@/bin/rm -f $(NAME) $(TEST_NAME)
+	@/bin/rm -f libft_malloc.so
 	@make -C ./libft fclean
 
 re: fclean all
