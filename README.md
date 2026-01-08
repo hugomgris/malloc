@@ -27,6 +27,7 @@ This is a fairly simple and small project (although the array of implemented bon
 Below its simplicity, the process of building this recreation can be broken down in a handful of main features: the allocation core, the thread safety mechanisms, the optimization presets, the defragmentation of freed space and the logging tools.
 
 ### Allocation Core
+---
 All `ft_malloc` calls (which include `ft_realloc` calls in cases in which memory needs to be reallocated and copied, which all go through `ft_malloc`) go through the code contained in `allocator.c`. Here is were the calls to `mmap` take place, be them for small or large chunks of memory. The process is managed via a couple of structs and an enum that shape up the basic data management needed by malloc, stored in `ft_malloc.h`, which are:
 
 ```C
@@ -311,6 +312,7 @@ It is initialized in `threader.c` via the `PTHREAD_MUTEX_INITIALIZER` macro, and
 
 
 ### Optimization Presets
+---
 As mentioned before, allocation sizes are divided in a 3 different tiers:
 - `TINY` -> 0-128
 - `SMALL` -> 128-1024
@@ -355,6 +357,7 @@ As mentioned above, `LARGE` allocations request the specific ammount of page-siz
 
 
 ### Defragmentation of Freed Space
+---
 This was delegated as a bonus feature in the task, although it can be argued that its importance is paramount. The specific code for this feature (also stated above, in the previous index) is, once again, quite simple: loop through the target zone and its blocks, find the freed (marked as freed) blocks and fuse them together in a single block with a conjoined size of all the respective sizes of the merged blocks:
 
 ```C
@@ -377,7 +380,8 @@ static void join_free_blocks(t_zone *zone)
 }
 ```
 
-## Logging and Debugging Tools
+### Logging and Debugging Tools
+---
 Debugging is built in following the system's malloc, i.e. via an environment variable. By exporting `MALLOC_DEBUG` with a value of 1 the user can set up the debug logs for every allocation call, which consist of prints in a size-address format like the following:
 
 ```
@@ -433,6 +437,7 @@ Address          : Hex Values                                       | ASCII
 ```
 
 ### Memory Leak Check
+---
 An additional feature to check memory leaks is also implemented. It works based on the marking of freed blocks that is part of the `free()` process, and is built as a check of the managed memory zones and blocks to retrieve their freed status. If any checked block is not marked as free, it is logged as a `LEAK` in the comprehensive output of the program. Otherwise, a confirmation of no leaks is printed:
 
 ```
