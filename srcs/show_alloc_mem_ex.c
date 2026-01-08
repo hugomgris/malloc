@@ -1,15 +1,15 @@
-#include "../incs/ft_malloc.h"
+#include "../incs/malloc.h"
 
 static void print_block_ex(t_block *block)
 {
 	void	*start = (void *)(block + 1);
 	void	*end = (char *)start + block->size;
 
-	printf("  [%s] %p - %p : %zu bytes\n", block->free ? "ft_free" : "USED",
+	printf("  [%s] %p - %p : %zu bytes\n", block->free ? "free" : "USED",
            start, end, block->size);
 }
 
-void	ft_show_alloc_mem_ex(void)
+void	show_alloc_mem_ex(void)
 {
 	pthread_mutex_lock(&g_malloc_mutex);
 

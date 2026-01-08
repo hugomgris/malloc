@@ -1,4 +1,4 @@
-#include "../incs/ft_malloc.h"
+#include "../incs/malloc.h"
 
 static void join_free_blocks(t_zone *zone)
 {
@@ -18,7 +18,7 @@ static void join_free_blocks(t_zone *zone)
 	}
 }
 
-void	ft_free(void *ptr)
+void	free(void *ptr)
 {
 	if (ptr == NULL)
 		return;

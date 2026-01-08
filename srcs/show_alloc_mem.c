@@ -1,6 +1,6 @@
-#include "../incs/ft_malloc.h"
+#include "../incs/malloc.h"
 
-void ft_show_alloc_mem(void)
+void show_alloc_mem(void)
 {
     pthread_mutex_lock(&g_malloc_mutex);
 

@@ -1,4 +1,4 @@
-#include "../incs/ft_malloc.h"
+#include "../incs/malloc.h"
 
 static size_t get_zone_size(t_zone_type type)
 {

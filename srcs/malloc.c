@@ -1,6 +1,6 @@
-#include "../incs/ft_malloc.h"
+#include "../incs/malloc.h"
 
-void	*ft_malloc(size_t size)
+void	*malloc(size_t size)
 {
 	if (is_debug_mode())
 		printf("%s[DEBUG] Allocation of %zu bytes%s\n", YELB, size, RESET);

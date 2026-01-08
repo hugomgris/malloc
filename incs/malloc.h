@@ -1,5 +1,5 @@
-#ifndef FT_MALLOC_H
-# define FT_MALLOC_H
+#ifndef MALLOC_H
+# define MALLOC_H
 
 # include <stdio.h>
 # include <unistd.h>
@@ -9,8 +9,6 @@
 # include <pthread.h>
 # include "colors.h"
 # include "logger.h"
-# include "../libft/incs/libft.h"
-# include "../libft/incs/ft_printf.h"
 
 // MACROs
 # define TINY_LIMIT 128
@@ -44,17 +42,21 @@ extern t_zone			*g_zones;
 extern pthread_mutex_t	g_malloc_mutex;
 
 // APIs
-FT_API void	*ft_malloc(size_t size);
-FT_API void	ft_free(void *ptr);
-FT_API void	*ft_realloc(void *ptr, size_t size);
+FT_API void	*malloc(size_t size);
+FT_API void	free(void *ptr);
+FT_API void	*realloc(void *ptr, size_t size);
 
 // ALLOCATORS
 FT_API void	*allocate_in_zone(t_zone_type type, size_t size);
 FT_API void	*allocate_large(size_t size);
 
 // VISUALIZERS
-void	ft_show_alloc_mem(void);
-void	ft_show_alloc_mem_ex(void);
+void	show_alloc_mem(void);
+void	show_alloc_mem_ex(void);
+
+// HELPERS
+void	*ft_memcpy(void *dst, const void *src, size_t len);
+char	*ft_strcpy(char *dst, const char *src);
 
 // DEBUGGER
 int is_debug_mode(void);

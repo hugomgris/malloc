@@ -1,4 +1,4 @@
-#include "../incs/ft_malloc.h"
+#include "../incs/malloc.h"
 
 int	is_debug_mode(void)
 {
