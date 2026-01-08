@@ -45,6 +45,7 @@ int main(void)
 	if (len > 0)
 		write(2, msg, len);
 	show_alloc_mem_ex();
+	free(d);
 
 	return 0;
 }

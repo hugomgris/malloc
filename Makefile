@@ -51,7 +51,13 @@ DEPFLAGS		=	-MMD -MP
 all: directories $(NAME) symlink
 
 test: all directories $(TEST_NAME)
-	LD_LIBRARY_PATH=. ./malloc
+	LD_LIBRARY_PATH=. MALLOC_DEBUG=0 MALLOC_BONUS=0 ./malloc
+
+test_debug: all directories $(TEST_NAME)
+	LD_LIBRARY_PATH=. MALLOC_DEBUG=1 MALLOC_BONUS=0 ./malloc
+
+test_bonus: all directories $(TEST_NAME)
+	LD_LIBRARY_PATH=. MALLOC_DEBUG=0 MALLOC_BONUS=1 ./malloc
 
 symlink:
 	@ln -sf $(NAME) $(SO_LINK)

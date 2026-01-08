@@ -43,6 +43,7 @@ typedef struct s_history {
 	void				*start;
 	void				*end;
 	size_t				size;
+	int					freed;
 	struct s_history	*next;
 } t_history;
 
@@ -76,6 +77,7 @@ int			is_bonus_mode(void);
 void		show_hex_dump(void *start, void *end);
 void		append_to_history(void *start, void *end, size_t size);
 void		show_malloc_history(void);
-
+void		mark_as_freed(void *ptr);
+void		check_memory_leaks(void);
 
 #endif

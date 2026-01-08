@@ -46,4 +46,6 @@ void	free(void *ptr)
 	}
 
 	pthread_mutex_unlock(&g_malloc_mutex);
+	
+	mark_as_freed(ptr);
 }
