@@ -112,8 +112,6 @@ void	mark_as_freed(void *ptr)
 	t_history *current = g_history;
 	t_history *last_match = NULL;
 	
-	// Find the LAST (most recent) entry with this pointer
-	// This handles cases where the allocator reuses freed addresses
 	while (current != NULL)
 	{
 		if (current->start == ptr && !current->freed)

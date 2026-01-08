@@ -46,7 +46,7 @@ void	*malloc(size_t size)
 		{
 			append_to_history(ptr, end, size);
 			
-			if (is_debug_mode())
+			if (is_bonus_mode())
 			{
 				show_malloc_history();
 			}

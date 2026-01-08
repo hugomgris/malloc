@@ -22,7 +22,7 @@ void	*realloc(void *ptr, size_t size)
 	if (new_ptr)
 	{
 		ft_memcpy(new_ptr, ptr, block->size);
-		free(ptr);  // This will mark the old ptr as freed
+		free(ptr);
 	}
 	
 	return new_ptr;
