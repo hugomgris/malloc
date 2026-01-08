@@ -1,5 +1,7 @@
 #include "../incs/malloc.h"
 
+static __thread int in_malloc = 0;
+
 static void print_block_ex(t_block *block)
 {
 	void	*start = (void *)(block + 1);
@@ -7,6 +9,14 @@ static void print_block_ex(t_block *block)
 
 	printf("  [%s] %p - %p : %zu bytes\n", block->free ? "free" : "USED",
            start, end, block->size);
+
+	// Only show hex dump if bonus mode is enabled
+	if (!in_malloc && is_bonus_mode())
+	{
+		in_malloc = 1;
+		show_hex_dump(start, end);
+		in_malloc = 0;
+	}
 }
 
 void	show_alloc_mem_ex(void)
