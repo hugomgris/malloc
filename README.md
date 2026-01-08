@@ -303,7 +303,8 @@ void	mark_as_freed(void *ptr)
 
 In the case of a reallocation call, if the targeted memory zone is not large enough to store the newly requested size, the flow goes through a free->malloc->memcpy pipeline. The old pointer (previousle allocated) is freed, a new allocation is done with the new size as argument, the data pointed by the old pointer is moved into the newly re-allocated pointer.
 
-## Thread Safety Mechanisms
+### Thread Safety Mechanisms
+---
 Thread safety is achieved via a unique global mutex that is locked before any allocation and free related activity. The mutex is stored in the header as a global variable:
 ```C
 extern pthread_mutex_t	g_malloc_mutex;
