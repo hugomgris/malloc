@@ -68,6 +68,7 @@ void		show_alloc_mem_ex(void);
 // HELPERS
 void		*ft_memcpy(void *dst, const void *src, size_t len);
 char		*ft_strcpy(char *dst, const char *src);
+void		set_malloc_tracking(int enable);
 
 // DEBUGGER
 int			is_debug_mode(void);

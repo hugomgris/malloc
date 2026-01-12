@@ -26,7 +26,22 @@ static t_zone	*create_zone(t_zone_type type, size_t size)
 	t_block	*block = (t_block *)zone->mem;
 	block->size = size;
 	block->free = 0;
-	block->next = NULL;
+	
+	size_t used_space = sizeof(t_block) + size;
+	size_t available_space = zone_size - sizeof(t_zone) - used_space;
+	
+	if (available_space > sizeof(t_block) + 16)
+	{
+		t_block *free_block = (t_block *)((char *)zone->mem + used_space);
+		free_block->size = available_space - sizeof(t_block);
+		free_block->free = 1;
+		free_block->next = NULL;
+		block->next = free_block;
+	}
+	else
+	{
+		block->next = NULL;
+	}
 
 	zone->blocks = block;
 
@@ -37,7 +52,6 @@ void	*allocate_in_zone(t_zone_type type, size_t size)
 {
 	t_zone	*zone = g_zones;
 
-	// If zone alredy exists, manage through global
 	while (zone)
 	{
 		if (zone->type == type)
@@ -49,6 +63,18 @@ void	*allocate_in_zone(t_zone_type type, size_t size)
 				if (block->free && block->size >= size)
 				{
 					block->free = 0;
+					
+					size_t remaining = block->size - size;
+					if (remaining > sizeof(t_block) + 16)
+					{
+						t_block *new_block = (t_block *)((char *)(block + 1) + size);
+						new_block->size = remaining - sizeof(t_block);
+						new_block->free = 1;
+						new_block->next = block->next;
+						block->next = new_block;
+						block->size = size;
+					}
+					
 					return (void *)(block + 1);
 				}
 				block = block->next;
@@ -57,7 +83,6 @@ void	*allocate_in_zone(t_zone_type type, size_t size)
 		zone = zone->next;
 	}
 
-	// Else, create a new zone
 	t_zone	*nzone = create_zone(type, size);
 	if (nzone == NULL)
 		return NULL;

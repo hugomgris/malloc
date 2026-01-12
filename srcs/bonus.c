@@ -2,6 +2,63 @@
 
 t_history		*g_history = NULL;
 
+static void write_str(const char *str)
+{
+	if (!str)
+		return;
+	size_t len = 0;
+	while (str[len])
+		len++;
+	write(1, str, len);
+}
+
+static void write_hex_byte(unsigned char byte)
+{
+	char hex[3];
+	const char *digits = "0123456789abcdef";
+	hex[0] = digits[byte >> 4];
+	hex[1] = digits[byte & 0x0f];
+	hex[2] = ' ';
+	write(1, hex, 3);
+}
+
+static void write_hex_ptr(void *ptr)
+{
+	char buffer[17];
+	unsigned long addr = (unsigned long)ptr;
+	int i;
+	
+	for (i = 15; i >= 0; i--)
+	{
+		int digit = addr & 0x0f;
+		buffer[i] = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
+		addr >>= 4;
+	}
+	write(1, buffer, 16);
+}
+
+static void write_num(size_t num)
+{
+	char buffer[32];
+	int i = 30;
+	
+	buffer[31] = '\0';
+	
+	if (num == 0)
+	{
+		write_str("0");
+		return;
+	}
+	
+	while (num > 0 && i >= 0)
+	{
+		buffer[i--] = '0' + (num % 10);
+		num /= 10;
+	}
+	
+	write_str(buffer + i + 1);
+}
+
 void show_hex_dump(void *start, void *end)
 {
 	unsigned char *ptr = (unsigned char *)start;
@@ -9,41 +66,50 @@ void show_hex_dump(void *start, void *end)
 	size_t bytes_per_line = 16;
 	size_t i;
 
-	printf("\nHex Dump from %p to %p (%zu bytes)\n", start, end, (size_t)(end_ptr - ptr));
-	printf("Address          : Hex Values                                       | ASCII\n");
-	printf("--------------------------------------------------------------------------------------\n");
+	set_malloc_tracking(0);
+	
+	write_str("\nHex Dump from 0x");
+	write_hex_ptr(start);
+	write_str(" to 0x");
+	write_hex_ptr(end);
+	write_str(" (");
+	write_num((size_t)(end_ptr - ptr));
+	write_str(" bytes)\n");
+	write_str("Address              : Hex Values                                       | ASCII\n");
+	write_str("--------------------------------------------------------------------------------------\n");
 
 	while (ptr < end_ptr)
 	{
-		printf("%016lx : ", (unsigned long)ptr);
+		write_str("0000");
+		write_hex_ptr(ptr);
+		write_str(" : ");
 
 		for (i = 0; i < bytes_per_line; i++)
 		{
 			if (ptr + i < end_ptr)
-				printf("%02x ", ptr[i]);
+				write_hex_byte(ptr[i]);
 			else
-				printf("   ");
+				write_str("   ");
 			
 			if (i == 7)
-				printf(" ");
+				write_str(" ");
 		}
 
-		printf("| ");
+		write_str("| ");
 
 		for (i = 0; i < bytes_per_line && ptr + i < end_ptr; i++)
 		{
 			unsigned char c = ptr[i];
-			if (c >= 32 && c <= 126)
-				printf("%c", c);
-			else
-				printf(".");
+			char ch = (c >= 32 && c <= 126) ? c : '.';
+			write(1, &ch, 1);
 		}
 
-		printf("\n");
+		write_str("\n");
 		ptr += bytes_per_line;
 	}
 
-	printf("--------------------------------------------------------------------------------------\n");
+	write_str("--------------------------------------------------------------------------------------\n");
+	set_malloc_tracking(1);
 }
 
 void	append_to_history(void *start, void *end, size_t size)
@@ -78,22 +144,41 @@ void show_malloc_history()
 	t_history *current = g_history;
 	int count = 0;
 	
-	printf("\n%s=============== ALLOCATION HISTORY ===============%s\n", BYEL, RESET);
+	set_malloc_tracking(0);
+	write_str("\n");
+	write_str(BYEL);
+	write_str("=============== ALLOCATION HISTORY ===============");
+	write_str(RESET);
+	write_str("\n");
 	
 	if (current == NULL)
 	{
-		printf("(No allocations yet)\n");
+		write_str("(No allocations yet)\n");
 	}
 	
 	while (current != NULL)
 	{
 		count++;
-		printf("%s[%d]%s %p -> %p : %zu bytes\n", 
-			BCYN, count, RESET, current->start, current->end, current->size);
+		write_str(BCYN);
+		write_str("[");
+		write_num(count);
+		write_str("]");
+		write_str(RESET);
+		write_str(" 0x");
+		write_hex_ptr(current->start);
+		write_str(" -> 0x");
+		write_hex_ptr(current->end);
+		write_str(" : ");
+		write_num(current->size);
+		write_str(" bytes\n");
 		current = current->next;
 	}
 	
-	printf("%s==================================================%s\n\n", BYEL, RESET);
+	write_str(BYEL);
+	write_str("==================================================");
+	write_str(RESET);
+	write_str("\n\n");
+	set_malloc_tracking(1);
 }
 
 int	is_bonus_mode(void)

@@ -2,14 +2,24 @@
 
 static __thread int in_malloc = 0;
 
+void	set_malloc_tracking(int enable)
+{
+	in_malloc = !enable;
+}
+
 void	*malloc(size_t size)
 {
 	void *ptr;
+	int should_track = !in_malloc;
+	int should_lock = !in_malloc;
 
-	pthread_mutex_lock(&g_malloc_mutex);
+	if (should_lock)
+		pthread_mutex_lock(&g_malloc_mutex);
+		
 	if (size == 0)
 	{
-		pthread_mutex_unlock(&g_malloc_mutex);
+		if (should_lock)
+			pthread_mutex_unlock(&g_malloc_mutex);
 		return NULL;
 	}
 
@@ -21,9 +31,10 @@ void	*malloc(size_t size)
 	else
 		ptr = allocate_large(size);
 
-	pthread_mutex_unlock(&g_malloc_mutex);
+	if (should_lock)
+		pthread_mutex_unlock(&g_malloc_mutex);
 
-	if (ptr && !in_malloc)
+	if (ptr && should_track)
 	{
 		in_malloc = 1;
 		
@@ -39,17 +50,7 @@ void	*malloc(size_t size)
 		
 		if (is_bonus_mode())
 		{
-			show_hex_dump(ptr, end);
-		}
-		
-		if (is_bonus_mode())
-		{
 			append_to_history(ptr, end, size);
-			
-			if (is_bonus_mode())
-			{
-				show_malloc_history();
-			}
 		}
 		
 		in_malloc = 0;
