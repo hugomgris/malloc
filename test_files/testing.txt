@@ -1,3 +1,7 @@
 gcc -o test0 test_files/test0.c && /usr/bin/time -v ./test0
 vs
 ./test_files/run_linux.sh /usr/bin/time -v ./test0
+
+gcc -o test1 test_files/test1.c && /usr/bin/time -v ./test1
+vs
+./test_files/run_linux.sh /usr/bin/time -v ./test1
